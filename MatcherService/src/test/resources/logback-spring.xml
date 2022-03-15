@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="false" debug="true">
+
+	<!-- Spring property injection -->
+
+	<springProperty scope="context" name="root.log.level"
+		source="switch.config.root.log.level" />
+	<springProperty scope="context" name="app.log.level"
+		source="switch.config.app.log.level" />
+	<springProperty scope="context" name="spring.log.level"
+		source="switch.config.spring.log.level" />
+
+
+
+
+	<property name="file.log.path" value="./app-logs" />
+
+
+	<property name="stdout.message.pattern"
+		value="{&quot;logTimestamp&quot;:&quot;%d{HH:mm:ss.SSS}&quot;, &quot;thread&quot;:&quot;%thread&quot;,&quot;logLevel&quot;: &quot;%-5level&quot;, &quot;loggerName&quot;: &quot;%logger&quot;, &quot;msg&quot;:&quot;%msg&quot;}%n" />
+	<property name="file.message.pattern" value="{&quot;logTimestamp&quot;:&quot;%d{HH:mm:ss.SSS}&quot;, &quot;thread&quot;:&quot;%thread&quot;,&quot;logLevel&quot;: &quot;%-5level&quot;, &quot;loggerName&quot;: &quot;%logger&quot;, &quot;msg&quot;:&quot;%msg&quot;}%n" />
+
+
+	<property name="file.size.big" value="10MB" />
+	<property name="file.size.small" value="2MB" />
+	<property name="file.archive.to.save.small" value="3" />
+	<property name="file.archive.to.save.big" value="10" />
+
+
+	<appender name="STDOUT" 	class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${stdout.message.pattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE"	class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${file.log.path}/general.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${file.log.path}/general.%i.log </fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>${file.archive.to.save.big}</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${file.size.big}</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${file.message.pattern}</pattern>
+		</encoder>
+	</appender>
+
+
+	<logger name="com.intuit.task.score" level="${app.log.level}"
+		additivity="false">
+
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+
+
+
+
+
+
+
+	
+	<springProfile name="!logtofile">
+		<logger name="org.springframework"
+			level="${spring.log.level:-INFO}" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</logger>
+	</springProfile>
+
+	<springProfile name="!logtofile">
+		<logger name="org.springframework"
+			level="${spring.log.level:-INFO}" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</logger>
+	</springProfile>
+	
+	<springProfile name="!logtofile">
+		<root level="${root.log.level:-INFO}">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+	
+	
+	
+	
+	
+	<springProfile name="logtofile">
+		<logger name="org.springframework"
+			level="${spring.log.level:-INFO}" additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+	</springProfile>
+
+	<springProfile name="logtofile">
+		<logger name="org.springframework"
+			level="${spring.log.level:-INFO}" additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+	</springProfile>
+	
+	<springProfile name="logtofile">
+		<root level="${root.log.level:-INFO}">
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+
+
+</configuration>
+
